@@ -6,7 +6,7 @@ var logger = require('morgan');
 var sassMiddleware = require('express-dart-sass');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var usersRouter = require('./routes/stories');
 
 var app = express();
 
@@ -23,7 +23,6 @@ app.use(sassMiddleware({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api', indexRouter);
-app.use('/api/users', usersRouter);
+app.use('/api/', indexRouter);
 
 module.exports = app;
