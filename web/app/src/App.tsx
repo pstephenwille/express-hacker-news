@@ -6,7 +6,7 @@ function App() {
     const [state, setState] = React.useState<boolean>(false);
 
     useEffect(()=>{
-        fetch('http://localhost:3000/api/users/user?foo=xxx')
+        fetch('http://localhost:3000/api/top-stories?foo=xxx')
             .then(res => res.json())
             .then(res => {
                 console.log(res);

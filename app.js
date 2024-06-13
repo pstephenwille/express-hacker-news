@@ -6,7 +6,7 @@ var logger = require('morgan');
 var sassMiddleware = require('express-dart-sass');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/stories');
+var usersRouter = require('./routes');
 
 var app = express();
 

@@ -38,6 +38,7 @@ const getCommentsForStories = async (comments) => {
 const saveAllToMongo = async (collectionName, documentsList) => {
     const client = await MongoClient.connect(mongoUrl);
     const dbo = client.db();
+    dbo.collection(collectionName).drop();
     const result = await dbo.collection(collectionName).insertMany(documentsList);
 }
 
