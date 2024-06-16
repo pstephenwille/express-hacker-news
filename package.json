@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "startMongoDB": "sh -c 'docker run --name mongodb -d -p 27017:27017  mongo:5.0.27-focal'",
-    "start": "npm run startMongoDB;  nodemon ./bin/www"
+    "start": "nodemon ./bin/www"
   },
   "dependencies": {
     "axios": "^1.7.2",

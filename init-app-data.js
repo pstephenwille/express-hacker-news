@@ -6,12 +6,16 @@ const hackerNewsBaseUrl = 'https://hacker-news.firebaseio.com/v0/';
 const mongoUrl = 'mongodb://localhost:27017/hacker-news'
 
 initApp.getHackerNewsData = async () => {
+    console.log('START...', performance.now());
+
     const topItems = await getTopItems();
-    const storiesData = await getStoriesForTopItems(topItems.data.splice(10));
+    const storiesData = await getStoriesForTopItems(topItems.data);
     const stories = storiesData
         .filter(story => story.status === 'fulfilled')
         .map(story => story.value.data);
-    saveAllToMongo('stories', stories);
+    await saveAllToMongo('stories', stories);
+
+    console.log('END...', performance.now());
 
     const storyComments = stories.flatMap(story => story.kids);
 
@@ -20,7 +24,7 @@ initApp.getHackerNewsData = async () => {
         .filter(comment => comment.status === 'fulfilled')
         .map(comment => comment.value.data);
 
-    saveAllToMongo('comments', comments);
+    await saveAllToMongo('comments', comments);
 }
 
 const getTopItems = async () => {
@@ -37,9 +41,18 @@ const getCommentsForStories = async (comments) => {
 
 const saveAllToMongo = async (collectionName, documentsList) => {
     const client = await MongoClient.connect(mongoUrl);
-    const dbo = client.db();
-    dbo.collection(collectionName).drop();
-    const result = await dbo.collection(collectionName).insertMany(documentsList);
+
+    let dbo = client.db();
+
+    const collections = await dbo.listCollections().toArray();
+    const collectionNames = collections.map(item => item.name);
+
+    if (collectionNames.includes(collectionName)) {
+        const drop = await dbo.collection(collectionName).drop();
+    }
+
+    await dbo.collection(collectionName).insertMany(documentsList);
+    await client.close();
 }
 
 module.exports = initApp

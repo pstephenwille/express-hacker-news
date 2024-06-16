@@ -3,6 +3,7 @@
 /**
  * Module dependencies.
  */
+const { PerformanceObserver, performance } = require('perf_hooks');
 var app = require('../app');
 var debug = require('debug')('hacker-news:server');
 var http = require('http');
@@ -83,5 +84,7 @@ function onListening() {
     var addr = server.address();
     var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
     debug('Listening on ' + bind);
-    initApp.getHackerNewsData()
+
+    initApp.getHackerNewsData();
+
 }
