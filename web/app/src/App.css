@@ -47,7 +47,11 @@
     .comments {
         font-size: 1rem;
         text-align: left;
-        pre{white-space: break-spaces}
+
+        pre {
+            white-space: break-spaces
+        }
+
         button {
             width: 10rem;
             margin: auto;
@@ -71,5 +75,28 @@
     }
     to {
         transform: rotate(360deg);
+    }
+}
+
+.pagination {
+    .title, ul{
+        margin: 0;
+        padding: 0;
+    }
+    li {
+        list-style: none;
+        display: inline-block;
+
+
+    }
+    .label{
+        padding: 0 0.3rem;
+
+    }
+    .nav{
+        cursor: pointer;
+    }
+    .nav:hover{
+        color:white;
     }
 }
