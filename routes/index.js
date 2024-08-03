@@ -12,23 +12,41 @@ router.get('', function (req, res, next) {
 
 /* GET users listing. */
 router.get(`/top-stories`, async (req, res, next) => {
-    const stories = await getTopStories();
+    let {pageNumber, pageSize} = req.query;
+    pageNumber = parseInt(pageNumber, 10) || 1;
+    pageSize = parseInt(pageSize, 10) || 10;
+    let paginatedResp = {pageNumber, pageSize, totalCount:0}
+    const stories = await getTopStories(pageNumber, pageSize);
     const topStoriesWithComments = await Promise.all(
-        stories.map(async story => {
+        stories[0].data.map(async story => {
             const comments = await getCommentsForStory(story.id)
             story.comments = comments;
 
             return story;
         }));
+    paginatedResp = {
+        pagination: {...paginatedResp, totalCount: stories[0].metadata[0].totalCount},
+        data: topStoriesWithComments
+    };
 
-    res.json(topStoriesWithComments);
+    res.json(paginatedResp);
 });
 
-const getTopStories = async () => {
+const getTopStories = async (page, pageSize) => {
     const client = await MongoClient.connect(MONGO_URL);
     const dbo = client.db();
-    const foo = await dbo.collection('stories').find().toArray();
-    return foo;
+    const stories = await dbo.collection('stories').aggregate([
+        {
+            $facet: {
+                metadata: [{$count: 'totalCount'}],
+                data: [{$skip: (page - 1) * pageSize}, {$limit: pageSize}],
+            },
+        },
+    ]).toArray();
+
+    // const stories = await dbo.collection('stories').find().toArray();
+
+    return stories;
 }
 const getCommentsForStory = async (commentsParentId) => {
     const client = await MongoClient.connect(MONGO_URL);

@@ -1,6 +1,8 @@
 # Express Node server
 
-demo hacker rank api
+demo hacker news api 
+
+express.js/node.js, mongodb, react
 
 ### setup
 2. mongo container with shell commands for Ubuntu

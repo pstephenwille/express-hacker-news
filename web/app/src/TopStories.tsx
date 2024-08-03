@@ -1,7 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Pagination} from "./Pagination";
 
 export const TopStories = () => {
     const [stories, setStories] = useState([])
+    const [pagination, setPagination] = useState({
+        pageNumber: 1,
+        pageSize: 10,
+        totalCount: 0
+    })
     const [commentsForStoryId, setCommentsForStoryId] = useState(0);
     const [toggleComments, setToggleComments] = useState(false);
 
@@ -23,6 +29,8 @@ export const TopStories = () => {
     }
 
     const buildCommentsUI = (storyId: number, comments: any) => {
+        if(!comments.length) return 'no comments'
+
         return (
             <div className={'comments'}>
                 <button onClick={() => {
@@ -48,18 +56,26 @@ export const TopStories = () => {
         )
     }
 
-    useEffect(() => {
-        fetch('http://localhost:3000/api/top-stories')
+    const getPaginatedStories = useCallback(() => {
+        const storiesUrl = `http://localhost:3000/api/top-stories?pageNumber=${pagination.pageNumber}&pageSize=${pagination.pageSize}`
+        fetch(storiesUrl)
             .then(res => res.json())
             .then(res => {
-                setStories(res)
+                setStories(res.data)
+                setPagination(res.pagination)
             });
-    }, []);
+    }, [pagination.pageNumber]);
+
+    useEffect(() => {
+        getPaginatedStories()
+    }, [pagination.pageNumber]);
 
     return (
         <div id={'stories'}>
+            <Pagination pagination={pagination} setPagination={setPagination}/>
             {buildStoriesUI()}
+            <Pagination pagination={pagination} setPagination={setPagination}/>
         </div>
-    )
+    );
 }
 
