@@ -28,14 +28,19 @@ export const TopStories = () => {
         })
     }
 
+    const log = () => {
+        console.log('render', commentsForStoryId);
+    }
+
     const buildCommentsUI = (storyId: number, comments: any) => {
-        if(!comments.length) return 'no comments'
+        if (!comments.length) return 'no comments'
 
         return (
             <div className={'comments'}>
+                {log()}
                 <button onClick={() => {
+                    setToggleComments((storyId !== commentsForStoryId) )
                     setCommentsForStoryId(storyId);
-                    setToggleComments(!toggleComments)
                 }}>Click for Comments
                 </button>
                 {((commentsForStoryId === storyId) && toggleComments)
@@ -50,7 +55,7 @@ export const TopStories = () => {
                             )
                         }
                     )
-                    : ''
+                    : <h1>{commentsForStoryId}</h1>
                 }
             </div>
         )
